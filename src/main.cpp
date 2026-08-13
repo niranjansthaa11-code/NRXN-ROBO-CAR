@@ -2,7 +2,7 @@
 #include <WiFi.h>
 #include <WebServer.h>
 
-//defining the motor pins that i connected
+// defining the motor pins that i connected
 #define ENA 13
 #define IN1 12
 #define IN2 14
@@ -10,19 +10,19 @@
 #define IN3 27
 #define IN4 26
 
-const uint8_t PWM_CH_A =0;
-const uint8_t PWM_CH_B =1;
-const uint16_t PWM_FREQ =1000; //speed 
-const uint8_t PWM_RES =8;
+const uint8_t PWM_CH_A = 0;
+const uint8_t PWM_CH_B = 1;
+const uint16_t PWM_FREQ = 1000; // speed
+const uint8_t PWM_RES = 8;
 
-int speedValue = 200; //inital speed that willbe made to control
+int speedValue = 200; // inital speed that willbe made to control
 
-//wifi initialization
-const char* ssid="Niranjan_Car";
-const char* password="12345678";
+// wifi initialization
+const char *ssid = "Niranjan Robo car ";
+const char *password = "12345678";
 WebServer server(80);
 
-//function prototype definationa
+// function prototype definationa
 void stopMotor();
 void forward();
 void backward();
@@ -30,55 +30,61 @@ void left();
 void right();
 void handleRoot();
 
-//starting serial to begin communication
-void setup(){
-Serial.begin(115200);
-//defining pin mode
-pinMode(IN1,OUTPUT);
-pinMode(IN2,OUTPUT);
-pinMode(IN3,OUTPUT);
-pinMode(IN4,OUTPUT);
+// starting serial to begin communication
+void setup()
+{
+  Serial.begin(115200);
+  // defining pin mode
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
 
-//for speeed setup for signal to motor driver form the esp
-ledcSetup(PWM_CH_A,PWM_FREQ,PWM_RES);
-ledcAttachPin(ENA,PWM_CH_A); 
-ledcSetup(PWM_CH_B,PWM_FREQ,PWM_RES);
-ledcAttachPin(ENB,PWM_CH_B); 
+  // for speeed setup for signal to motor driver form the esp
+  ledcSetup(PWM_CH_A, PWM_FREQ, PWM_RES);
+  ledcAttachPin(ENA, PWM_CH_A);
+  ledcSetup(PWM_CH_B, PWM_FREQ, PWM_RES);
+  ledcAttachPin(ENB, PWM_CH_B);
 
+  // creating own access point
+  WiFi.softAP(ssid, password);
+  Serial.print("IP Address");
+  Serial.println(WiFi.softAPIP());
 
-//creating own access point 
-WiFi.softAP(ssid,password);
-Serial.print("IP Address");
-Serial.println(WiFi.softAPIP());
+  // html and api fxn this
+  server.on("/", handleRoot);
+  server.on("/F", HTTP_GET, []()
+            {forward(); server.send(200,"text/plain","Forward"); });
+  server.on("/B", HTTP_GET, []()
+            {backward(); server.send(200,"text/plain","Backward"); });
+  server.on("/L", HTTP_GET, []()
+            {left(); server.send(200,"text/plain","Left"); });
+  server.on("/R", HTTP_GET, []()
+            {right(); server.send(200,"text/plain","Right"); });
+  server.on("/S", HTTP_GET, []()
+            {stopMotor(); server.send(200,"text/plain","Stop"); });
 
-//html and api fxn this 
-server.on("/", handleRoot);
-server.on("/F",HTTP_GET,[](){forward(); server.send(200,"text/plain","Forward");});
-server.on("/B",HTTP_GET,[](){backward(); server.send(200,"text/plain","Backward");});
-server.on("/L",HTTP_GET,[](){left(); server.send(200,"text/plain","Left");});
-server.on("/R",HTTP_GET,[](){right(); server.send(200,"text/plain","Right");});
-server.on("/S",HTTP_GET,[](){stopMotor(); server.send(200,"text/plain","Stop");});
-
-
-server.on("/speed",HTTP_GET,[](){
+  server.on("/speed", HTTP_GET, []()
+            {
   if(server.hasArg("v")){
     speedValue=server.arg("v").toInt(); //string to int
     speedValue=constrain(speedValue,0,255); //clamping value form 0 tp 225
     ledcWrite(PWM_CH_A,speedValue);
     ledcWrite(PWM_CH_B,speedValue);
   }
-  server.send(200,"text/plain","Speed set");
-});
-server.begin();
-Serial.println("RObo car is ready bruhhhhhh");
+  server.send(200,"text/plain","Speed set"); });
+  server.begin();
+  Serial.println("RObo car is ready bruhhhhhh");
 }
-//fro response fo the http 
-void loop() {
+// fro response fo the http
+void loop()
+{
   server.handleClient();
 }
 
-void handleRoot(){
-  String html =R"rawliteral(
+void handleRoot()
+{
+  String html = R"rawliteral(
   <!DOCTYPE html><html>
     <head>
       <title>NRXN CAR</title>
@@ -128,38 +134,42 @@ void handleRoot(){
       </div>
     </body>
     </html>
-        })rawliteral";
-        server.send(200,"text/html", html);
+        )rawliteral";
+  server.send(200, "text/html", html);
 }
-void forward(){
-  digitalWrite(IN1,HIGH);
-  digitalWrite(IN2,LOW);
-  digitalWrite(IN3,HIGH);
-  digitalWrite(IN4,LOW);
+void forward()
+{
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, LOW);
+  digitalWrite(IN3, HIGH);
+  digitalWrite(IN4, LOW);
 }
-void backward(){
-  digitalWrite(IN1,LOW);
+void backward()
+{
+  digitalWrite(IN1, LOW);
   digitalWrite(IN2, HIGH);
   digitalWrite(IN3, LOW);
   digitalWrite(IN4, HIGH);
 }
-//motor A moves forward and B backward leading to left 
-void left() {
-  digitalWrite(IN1, LOW);
-  digitalWrite(IN2, HIGH);  
-  digitalWrite(IN3, HIGH);
-  digitalWrite(IN4, LOW);    
-}
-void right() {
+// motor A moves forward and B backward leading to left
+void left()
+{
   digitalWrite(IN1, HIGH);
   digitalWrite(IN2, LOW);
   digitalWrite(IN3, LOW);
   digitalWrite(IN4, HIGH);
 }
-void stopMotor() {
+void right()
+{
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, HIGH);
+  digitalWrite(IN3, HIGH);
+  digitalWrite(IN4, LOW);
+}
+void stopMotor()
+{
   digitalWrite(IN1, LOW);
   digitalWrite(IN2, LOW);
   digitalWrite(IN3, LOW);
   digitalWrite(IN4, LOW);
 }
-
