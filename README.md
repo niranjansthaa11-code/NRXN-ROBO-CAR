@@ -57,9 +57,13 @@ I made this car because i really wanna build a remote control car from the child
 - PlatformIO
 
 ## Schematic
-
-
 ![Schematic](https://github.com/niranjansthaa11-code/NRXN-ROBO-CAR/blob/master/Skematics/Schematic_Bot_Car_2026-08-12.png)
+
+## Bill of Materials (BOM)
+See [BOM.md](./BOM.md) for full parts list with quantities and specs.
+
+## Images
+![Robo car image ](https://github.com/niranjansthaa11-code/NRXN-ROBO-CAR/blob/master/Images/1.jpg)
 
 ## Known Issues
 - L298N runs hot after a few minutes of continuous use(heat sink should be used
