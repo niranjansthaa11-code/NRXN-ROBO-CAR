@@ -4,6 +4,10 @@
 An ESP32-based **WiFi Controlled ROBO Car** that can be controlled directly from any phone or laptop browser . The ESP32 creates its own WiFi access point and serves a control webpage with Forward, Backward, Left, Right, Stop buttons and a live speed slider to change the speed of the car.
 ## Why i made this car ?
 I made this car because i really wanna build a remote control car from the childhood that runs with my own code and which code can be changed by me .. i really wanna make the car with my own hands so i built it .
+## Journal + Demo :
+https://macondo.hackclub.com/projects/12168 <br>
+https://www.youtube.com/watch?v=WoCbVGGZMnM
+
 
 ## The ROBO Supports
 
