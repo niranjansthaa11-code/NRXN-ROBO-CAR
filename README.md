@@ -1,4 +1,5 @@
 # NRXN Car
+![Schematic](https://github.com/niranjansthaa11-code/NRXN-ROBO-CAR/blob/master/thum.png)
 
 An ESP32-based **WiFi Controlled ROBO Car** that can be controlled directly from any phone or laptop browser . The ESP32 creates its own WiFi access point and serves a control webpage with Forward, Backward, Left, Right, Stop buttons and a live speed slider to change the speed of the car.
 ## Why i made this car ?
